@@ -52,7 +52,7 @@ const googleSingIn = async( req, res= response) =>{
 
     try {
 
-        const { correo, nombre, img }= await googleVerify( id_token )
+        const { correo, nombre, img } = await googleVerify( id_token )
 
         let usuario = await Usuario.findOne({ correo })
 

@@ -1,3 +1,4 @@
+const { Categoria, Producto } = require('../models')
 const Role = require('../models/role')
 const Usuario = require('../models/users')
 
@@ -24,9 +25,59 @@ const existUsuarioById = async(id ) => {
         throw new Error(`El usuario con id ${id} no existe`)
     }
 }
+const existeCategoria = async( id ) => {
+
+    const existcategory = await Categoria.findById( id )
+    if(!existcategory){
+        throw new Error(`La categoria con id ${id} no existe`)
+    }
+}
+const existeProducto = async( id ) => {
+
+    const existProducto = await Producto.findById( id )
+    if(!existProducto){
+        throw new Error(`El producto con id ${id} no existe`)
+    }
+}
+
+const categoriaActiva = async ( id ) => {
+    const existeCategoria = await Categoria.findById(id);
+    if (!existeCategoria.estado) {
+      throw new Error(`La categoria ${existeCategoria.nombre} no existe o fue eliminada`);
+    }
+}
+
+const categoriaExisteActualizar = async (req, res, next) => {
+    const { nombre } = req.body;
+    const { id } = req.params;
+    const nombreActualizado = nombre.toUpperCase();
+  
+    try {
+      const categoriaActual = await Categoria.findById(id);
+  
+      if (categoriaActual.nombre !== nombreActualizado) {
+        const existeCategoria = await Categoria.findOne({ nombre: nombreActualizado });
+  
+        if (existeCategoria) {
+          throw new Error(`La categoría ${nombreActualizado} ya existe`);
+        }
+      }
+  
+      next(); // Pasar al siguiente middleware si no hay errores
+    } catch (error) {
+        res.status(400).json({
+            error: `La categoria ${nombre} ya existe`
+        })
+    }
+  };
+  
 
 module.exports = {
     esRoleValido,
     existEmail,
-    existUsuarioById
+    existUsuarioById,
+    existeCategoria,
+    existeProducto,
+    categoriaActiva,
+    categoriaExisteActualizar
 }
