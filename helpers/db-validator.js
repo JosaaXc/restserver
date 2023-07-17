@@ -70,6 +70,18 @@ const categoriaExisteActualizar = async (req, res, next) => {
         })
     }
   };
+
+//validar colecciones permitidas
+
+const coleccionesPermitidas = ( coleccion = '', colecciones = [] ) => {
+
+    const incluida = colecciones.includes( coleccion )
+    if(!incluida){
+        throw new Error(`La colección ${ coleccion } no es permitida, ${ colecciones } son las permitidas`)
+    }
+
+    return true
+}
   
 
 module.exports = {
@@ -79,5 +91,6 @@ module.exports = {
     existeCategoria,
     existeProducto,
     categoriaActiva,
-    categoriaExisteActualizar
+    categoriaExisteActualizar,
+    coleccionesPermitidas
 }
